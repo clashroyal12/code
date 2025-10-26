@@ -1,0 +1,15 @@
+# Dataset
+df <- data.frame(name=c("A","B","C"), score=c(10,20,30))
+df_stream <- data.frame(time=1:5, value=c(10,15,20,25,30))
+
+# One-time query: scores > 15
+print(df[df$score > 15, ])
+
+# Ad-hoc query: names starting with B
+print(subset(df, grepl("^B", name)))
+
+# Continuous query: simulate data arriving each second
+for(i in 1:nrow(df_stream)){
+  Sys.sleep(1)               # wait 1 second
+  if(df_stream$value[i] > 18) print(df_stream[i, ])
+}
