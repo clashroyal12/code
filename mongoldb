@@ -1,0 +1,58 @@
+// 1️⃣ Show all databases
+show dbs
+
+// 2️⃣ Create or switch to database "yash"
+use yash
+
+// 3️⃣ Show current database
+db
+
+// 4️⃣ Create collection "yash"
+db.createCollection("yash")
+
+// 5️⃣ Insert one document
+db.yash.insertOne({name: "Alice", age: 25})
+
+// 6️⃣ Insert multiple documents
+db.yash.insertMany([
+  {name: "Bob", age: 30},
+  {name: "Charlie", age: 28},
+  {name: "David", age: 30},
+  {name: "Eve", age: 30}
+])
+
+// 7️⃣ Find all documents
+db.yash.find()
+
+// ✅ 7.1 Find many with a condition (age = 30)
+db.yash.find({age: 30})
+
+// 8️⃣ Find with condition (greater than 25)
+db.yash.find({age: {$gt: 25}})
+
+// 9️⃣ Update one document
+db.yash.updateOne({name: "Alice"}, {$set: {age: 26}})
+
+// ✅ 9.1 Update many documents (set age = 32 where age is 30)
+db.yash.updateMany({age: 30}, {$set: {age: 32}})
+
+// 🔟 Delete one document
+db.yash.deleteOne({name: "Bob"})
+
+// ✅ 10.1 Delete many documents
+db.yash.deleteMany({age: 32})
+
+// 11️⃣ Count total documents
+db.yash.countDocuments()
+
+// 12️⃣ Drop a collection
+// db.yash.drop()   // remove the collection
+
+// 13️⃣ Rename collection "yash" to "yash_renamed"
+db.yash.renameCollection("yash_renamed")
+
+// 14️⃣ Create index on "name"
+db.yash_renamed.createIndex({name: 1})
+
+// 15️⃣ Drop the database
+// db.dropDatabase()  // careful: deletes everything 😄
