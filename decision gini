@@ -1,0 +1,73 @@
+#!pip install pandas numpy matplotlib seaborn scikit-learn       
+#[for py remove !and run in terminal not in code]
+
+
+
+# ============================================================
+# 🌳 Decision Tree Classifier using Gini Index (with Heatmap)
+# ============================================================
+
+# Step 1: Import Libraries
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+from sklearn.metrics import accuracy_score, confusion_matrix, classification_report
+
+# Step 2: Load Inbuilt Dataset (Iris)
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+feature_names = iris.feature_names
+class_names = iris.target_names
+
+print("Feature Names:", feature_names)
+print("Class Names:", class_names)
+print("Dataset Shape:", X.shape)
+
+# Step 3: Split Dataset (Train-Test)
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.25, random_state=42
+)
+
+# Step 4: Create Decision Tree using Gini Index
+dt_model = DecisionTreeClassifier(criterion='gini', max_depth=3, random_state=42)
+dt_model.fit(X_train, y_train)
+
+# Step 5: Predictions
+y_pred = dt_model.predict(X_test)
+
+# Step 6: Evaluation Metrics
+acc = accuracy_score(y_test, y_pred)
+cm = confusion_matrix(y_test, y_pred)
+report = classification_report(y_test, y_pred, target_names=class_names)
+
+print("\n================ DECISION TREE (GINI) METRICS ================")
+print(f"Accuracy: {acc:.4f}")
+print("\nConfusion Matrix:\n", cm)
+print("\nClassification Report:\n", report)
+
+# Step 7: Plot Confusion Matrix Heatmap
+plt.figure(figsize=(6, 4))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues',
+            xticklabels=class_names,
+            yticklabels=class_names)
+plt.title("Confusion Matrix Heatmap (Decision Tree - Gini Index)")
+plt.xlabel("Predicted Labels")
+plt.ylabel("True Labels")
+plt.show()
+
+# Step 8: Visualize Decision Tree
+plt.figure(figsize=(12, 8))
+plot_tree(
+    dt_model,
+    feature_names=feature_names,
+    class_names=class_names,
+    filled=True,
+    rounded=True,
+    fontsize=10
+)
+plt.title("Decision Tree Classifier (Gini Index) - Iris Dataset")
+plt.show()
