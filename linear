@@ -1,0 +1,58 @@
+#!pip install pandas numpy matplotlib seaborn scikit-learn       
+#[for py remove !and run in terminal not in code]
+
+
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LinearRegression, LogisticRegression
+from sklearn.metrics import (
+    mean_squared_error, r2_score,
+    accuracy_score, classification_report, confusion_matrix
+)
+
+iris = load_iris()
+df = pd.DataFrame(iris.data, columns=iris.feature_names)
+df['target'] = iris.target
+df['target_name'] = iris.target_names[df['target']]
+
+# -------------------------------
+# Linear Regression
+# -------------------------------
+print("\n📘 LINEAR REGRESSION ")
+
+X_lin = df[['petal width (cm)']]
+y_lin = df['petal length (cm)']
+
+X_train_lin, X_test_lin, y_train_lin, y_test_lin = train_test_split(X_lin, y_lin, test_size=0.2, random_state=42)
+
+lin_reg = LinearRegression()
+lin_reg.fit(X_train_lin, y_train_lin)
+y_pred_lin = lin_reg.predict(X_test_lin)
+
+# Metrics
+mse = mean_squared_error(y_test_lin, y_pred_lin)
+r2 = r2_score(y_test_lin, y_pred_lin)
+
+print(f"Mean Squared Error: {mse:.3f}")
+print(f"R² Score: {r2:.3f}")
+
+# Plot Regression Line
+plt.figure(figsize=(6,4))
+sns.scatterplot(x=X_test_lin.values.flatten(), y=y_test_lin, color='blue', label='Actual')
+sns.lineplot(x=X_test_lin.values.flatten(), y=y_pred_lin, color='red', label='Regression Line')
+plt.title("Linear Regression: Petal Width vs Petal Length")
+plt.xlabel("Petal Width (cm)")
+plt.ylabel("Petal Length (cm)")
+plt.legend()
+plt.show()
+
+# Heatmap of correlation
+plt.figure(figsize=(6,4))
+sns.heatmap(df.corr(numeric_only=True), annot=True, cmap="coolwarm", fmt=".2f")
+plt.title("Heatmap - Feature Correlations (Linear Regression)")
+plt.show()
