@@ -1,0 +1,99 @@
+#!pip install pandas numpy matplotlib seaborn scikit-learn networkx scipy   
+#[for py remove !and run in terminal not in code]
+
+
+
+# -------------------------------------------------------------
+# 🌳 Minimum Spanning Tree (MST) 
+# -------------------------------------------------------------
+
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import make_blobs
+from scipy.spatial.distance import pdist, squareform
+from scipy.sparse.csgraph import minimum_spanning_tree
+import networkx as nx
+
+# -----------------------------
+# Generate synthetic data
+# -----------------------------
+X, _ = make_blobs(n_samples=30, centers=3, random_state=42, cluster_std=1.2)
+
+# -----------------------------
+# Compute pairwise distance matrix
+# -----------------------------
+dist_matrix = squareform(pdist(X, metric='euclidean'))
+
+# -----------------------------
+# Build Minimum Spanning Tree (MST)
+# -----------------------------
+mst_sparse = minimum_spanning_tree(dist_matrix)
+mst = mst_sparse.toarray().astype(float)
+
+# -----------------------------
+# Convert MST to Graph (for visualization)
+# -----------------------------
+G = nx.Graph()
+for i in range(len(X)):
+    for j in range(i+1, len(X)):
+        if mst[i, j] > 0:
+            G.add_edge(i, j, weight=mst[i, j])
+
+# -----------------------------
+# Define threshold to cut MST edges (to form clusters)
+# -----------------------------
+threshold = np.percentile(mst[mst > 0], 75)  # remove top 25% longest edges
+
+# Remove long edges to separate clusters
+edges_to_remove = [(u, v) for u, v, d in G.edges(data=True) if d['weight'] > threshold]
+G.remove_edges_from(edges_to_remove)
+
+# -----------------------------
+# Find connected components (clusters)
+# -----------------------------
+clusters = list(nx.connected_components(G))
+labels = np.zeros(len(X), dtype=int)
+for cluster_id, cluster_points in enumerate(clusters):
+    for point in cluster_points:
+        labels[point] = cluster_id
+
+# -----------------------------
+# Visualization: Points + MST Connections
+# -----------------------------
+plt.figure(figsize=(8, 6))
+pos = {i: (X[i, 0], X[i, 1]) for i in range(len(X))}
+
+# Plot MST edges
+for (u, v) in G.edges():
+    x_values = [X[u, 0], X[v, 0]]
+    y_values = [X[u, 1], X[v, 1]]
+    plt.plot(x_values, y_values, 'k--', alpha=0.4)
+
+# Plot points by cluster
+sns.scatterplot(x=X[:, 0], y=X[:, 1], hue=labels, palette='Set2', s=100, edgecolor='k')
+plt.title("🌳 MST-Based Graph Clustering (Connectivity-Based)")
+plt.xlabel("Feature 1")
+plt.ylabel("Feature 2")
+plt.grid(True)
+plt.show()
+
+# -----------------------------
+# Summary
+# -----------------------------
+print(f"🔹 Total Clusters Found: {len(clusters)}")
+for i, cluster in enumerate(clusters, 1):
+    print(f"  Cluster {i}: {sorted(cluster)}")
+
+
+
+
+
+
+
+
+
+
+
+
+#The Minimum Spanning Tree (MST) is a concept from graph theory that connects all data points (or nodes) in a network using the shortest possible total distance, ensuring that every point is reachable from every other point without forming any loops or cycles. In simple terms, it finds the most efficient way to connect all points together while minimizing the total connection cost or distance. It is often used in clustering to identify natural groupings by removing the longest edges in the tree, which separates the data into connected components. A real-life analogy of an MST is building the cheapest road network that connects all cities together, ensuring full connectivity with the minimum total road length and no redundant routes.
