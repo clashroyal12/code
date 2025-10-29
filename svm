@@ -1,0 +1,98 @@
+#!pip install pandas numpy matplotlib seaborn scikit-learn       
+#[for py remove !and run in terminal not in code]
+
+
+
+# ============================================================
+# 💠 SVM 
+# ============================================================
+
+import numpy as np
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn import datasets
+from sklearn.model_selection import train_test_split
+from sklearn.svm import SVC
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+# -----------------------------
+# Step 1: Load Iris dataset
+# -----------------------------
+iris = datasets.load_iris()
+
+# Take only first two classes (Setosa & Versicolor) and first two features
+X = iris.data[iris.target != 2, :2]
+y = iris.target[iris.target != 2]
+
+# -----------------------------
+# Step 2: Train-Test Split
+# -----------------------------
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.3, random_state=42
+)
+
+# -----------------------------
+# Step 3: Train Linear SVM
+# -----------------------------
+svm_model = SVC(kernel='linear', C=1.0)
+svm_model.fit(X_train, y_train)
+
+# -----------------------------
+# Step 4: Predictions & Metrics
+# -----------------------------
+y_pred = svm_model.predict(X_test)
+acc = accuracy_score(y_test, y_pred)
+cm = confusion_matrix(y_test, y_pred)
+report = classification_report(y_test, y_pred, target_names=['Setosa', 'Versicolor'])
+
+print("=====================================")
+print("💠 Support Vector Machine (Linear) Results")
+print("=====================================")
+print(f"Accuracy: {acc:.4f}")
+print("\nConfusion Matrix:\n", cm)
+print("\nClassification Report:\n", report)
+
+# -----------------------------
+# Step 5: Confusion Matrix Heatmap
+# -----------------------------
+plt.figure(figsize=(5, 4))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Purples',
+            xticklabels=['Setosa', 'Versicolor'],
+            yticklabels=['Setosa', 'Versicolor'])
+plt.title(f"SVM Confusion Matrix\nAccuracy: {acc:.2f}")
+plt.xlabel("Predicted Labels")
+plt.ylabel("True Labels")
+plt.show()
+
+# -----------------------------
+# Step 6: Decision Boundary, Margins, and Support Vectors
+# -----------------------------
+plt.figure(figsize=(8, 6))
+
+# Grid for decision boundary
+x_min, x_max = X[:, 0].min() - 0.5, X[:, 0].max() + 0.5
+y_min, y_max = X[:, 1].min() - 0.5, X[:, 1].max() + 0.5
+xx, yy = np.meshgrid(np.arange(x_min, x_max, 0.02),
+                     np.arange(y_min, y_max, 0.02))
+
+# Decision function for the grid
+Z = svm_model.decision_function(np.c_[xx.ravel(), yy.ravel()])
+Z = Z.reshape(xx.shape)
+
+# Plot decision boundary & margins
+plt.contour(xx, yy, Z, colors='k', levels=[-1, 0, 1],
+            linestyles=['--', '-', '--'], linewidths=1.5)
+
+# Plot training data
+plt.scatter(X[:, 0], X[:, 1], c=y, cmap='coolwarm', edgecolors='k')
+
+# Highlight support vectors
+plt.scatter(svm_model.support_vectors_[:, 0],
+            svm_model.support_vectors_[:, 1],
+            s=100, facecolors='none', edgecolors='k', linewidths=1.5,
+            label='Support Vectors')
+
+plt.xlabel('Sepal Length (cm)')
+plt.ylabel('Sepal Width (cm)')
+plt.legend()
+plt.show()
