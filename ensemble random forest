@@ -1,0 +1,98 @@
+#!pip install pandas numpy matplotlib seaborn scikit-learn       
+#[for py remove !and run in terminal not in code]
+
+
+
+# ============================================================
+# Random Forest  AdaBoost
+# ============================================================
+
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.ensemble import RandomForestClassifier, AdaBoostClassifier
+from sklearn.metrics import accuracy_score, classification_report, confusion_matrix
+
+# -----------------------------
+# Step 1: Load Dataset
+# -----------------------------
+iris = load_iris()
+X = iris.data
+y = iris.target
+class_names = iris.target_names
+
+# -----------------------------
+# Step 2: Split Data
+# -----------------------------
+X_train, X_test, y_train, y_test = train_test_split(
+    X, y, test_size=0.25, random_state=42
+)
+
+# -----------------------------
+# Step 3: Train Models
+# -----------------------------
+rf_model = RandomForestClassifier(n_estimators=100, random_state=42)
+ada_model = AdaBoostClassifier(n_estimators=100, random_state=42)
+
+rf_model.fit(X_train, y_train)
+ada_model.fit(X_train, y_train)
+
+# -----------------------------
+# Step 4: Predictions
+# -----------------------------
+y_pred_rf = rf_model.predict(X_test)
+y_pred_ada = ada_model.predict(X_test)
+
+# -----------------------------
+# Step 5: Evaluation Metrics
+# -----------------------------
+rf_acc = accuracy_score(y_test, y_pred_rf)
+ada_acc = accuracy_score(y_test, y_pred_ada)
+
+rf_report = classification_report(y_test, y_pred_rf, target_names=class_names)
+ada_report = classification_report(y_test, y_pred_ada, target_names=class_names)
+
+rf_cm = confusion_matrix(y_test, y_pred_rf)
+ada_cm = confusion_matrix(y_test, y_pred_ada)
+
+# -----------------------------
+# Step 6: Print Results
+# -----------------------------
+print("=====================================")
+print("🌲 Random Forest Classifier Results")
+print("=====================================")
+print(f"Accuracy: {rf_acc:.4f}")
+print("Confusion Matrix:\n", rf_cm)
+print("Classification Report:\n", rf_report)
+
+print("\n=====================================")
+print("⚡ AdaBoost Classifier Results")
+print("=====================================")
+print(f"Accuracy: {ada_acc:.4f}")
+print("Confusion Matrix:\n", ada_cm)
+print("Classification Report:\n", ada_report)
+
+# -----------------------------
+# Step 7: Visualize Confusion Matrices
+# -----------------------------
+plt.figure(figsize=(12, 5))
+
+# Random Forest Heatmap
+plt.subplot(1, 2, 1)
+sns.heatmap(rf_cm, annot=True, fmt='d', cmap='Greens',
+            xticklabels=class_names, yticklabels=class_names)
+plt.title(f" Random Forest Confusion Matrix\n")
+plt.xlabel("Predicted")
+plt.ylabel("True")
+
+# AdaBoost Heatmap
+plt.subplot(1, 2, 2)
+sns.heatmap(ada_cm, annot=True, fmt='d', cmap='Oranges',
+            xticklabels=class_names, yticklabels=class_names)
+plt.title(f"AdaBoost Confusion Matrix\n")
+plt.xlabel("Predicted")
+plt.ylabel("True")
+
+plt.tight_layout()
+plt.show()
