@@ -1,0 +1,68 @@
+#!pip install pandas numpy matplotlib seaborn scikit-learn       
+#[for py remove !and run in terminal not in code]
+
+
+
+# -----------------------------------------
+# 📊 Confusion Matrix and ROC Curve
+# -----------------------------------------
+
+import numpy as np
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+from sklearn.datasets import load_iris
+from sklearn.model_selection import train_test_split
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import confusion_matrix, roc_curve, roc_auc_score, classification_report, accuracy_score
+from sklearn.preprocessing import label_binarize
+
+# -------------------------------
+# Load dataset
+# -------------------------------
+iris = load_iris()
+X = iris.data
+y = iris.target
+
+# For ROC visualization, use binary classification (Setosa vs Non-Setosa)
+y_bin = (y != 0).astype(int)  
+
+X_train, X_test, y_train, y_test = train_test_split(X, y_bin, test_size=0.3, random_state=42)
+
+# -------------------------------
+# Train Logistic Regression
+# -------------------------------
+model = LogisticRegression(max_iter=200)
+model.fit(X_train, y_train)
+y_pred = model.predict(X_test)
+y_prob = model.predict_proba(X_test)[:, 1]
+
+# -------------------------------
+# Confusion Matrix
+# -------------------------------
+cm = confusion_matrix(y_test, y_pred)
+plt.figure(figsize=(5,4))
+sns.heatmap(cm, annot=True, fmt='d', cmap='Blues', xticklabels=['Setosa','Non-Setosa'], yticklabels=['Setosa','Non-Setosa'])
+plt.title("Confusion Matrix ")
+plt.xlabel("Predicted Label")
+plt.ylabel("True Label")
+plt.show()
+
+# Print metrics
+print("\nAccuracy:", accuracy_score(y_test, y_pred))
+print("\nClassification Report:\n", classification_report(y_test, y_pred))
+
+# -------------------------------
+# ROC Curve
+# -------------------------------
+fpr, tpr, thresholds = roc_curve(y_test, y_prob)
+roc_auc = roc_auc_score(y_test, y_prob)
+
+plt.figure(figsize=(6,4))
+plt.plot(fpr, tpr, color='darkorange', label=f'ROC curve (AUC = {roc_auc:.2f})')
+plt.plot([0, 1], [0, 1], color='navy', linestyle='--')
+plt.xlabel('False Positive Rate')
+plt.ylabel('True Positive Rate')
+plt.title('ROC Curve ')
+plt.legend(loc="lower right")
+plt.show()
