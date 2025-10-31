@@ -71,3 +71,16 @@ plot_tree(
 )
 plt.title("Decision Tree Classifier (Gini Index) - Iris Dataset")
 plt.show()
+
+
+
+
+
+from sklearn.tree import DecisionTreeClassifier, plot_tree
+import numpy as np, matplotlib.pyplot as plt
+
+X=np.array([[1,2],[2,3],[3,3],[6,5],[7,8],[8,8]])
+y=np.array([0,0,0,1,1,1])
+m=DecisionTreeClassifier(criterion='gini').fit(X,y)
+plot_tree(m)
+plt.show()
