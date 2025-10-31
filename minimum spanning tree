@@ -91,9 +91,12 @@ for i, cluster in enumerate(clusters, 1):
 
 
 
+from sklearn.cluster import SpectralClustering
+import numpy as np
+import matplotlib.pyplot as plt
 
+X = np.array([[1,2],[2,3],[3,2],[8,8],[9,9],[25,30]])
+m = SpectralClustering(n_clusters=3).fit(X)
 
-
-
-
-#The Minimum Spanning Tree (MST) is a concept from graph theory that connects all data points (or nodes) in a network using the shortest possible total distance, ensuring that every point is reachable from every other point without forming any loops or cycles. In simple terms, it finds the most efficient way to connect all points together while minimizing the total connection cost or distance. It is often used in clustering to identify natural groupings by removing the longest edges in the tree, which separates the data into connected components. A real-life analogy of an MST is building the cheapest road network that connects all cities together, ensuring full connectivity with the minimum total road length and no redundant routes.
+plt.scatter(X[:,0], X[:,1], c=m.labels_)
+plt.show()
