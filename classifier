@@ -57,3 +57,17 @@ def combine_classifiers_experiment():
 
 if __name__ == "__main__":
     combine_classifiers_experiment()
+
+
+
+
+
+
+
+
+from sklearn.neighbors import KNeighborsClassifier
+import numpy as np
+import matplotlib.pyplot as plt
+m=KNeighborsClassifier(n_neighbors=3).fit(X,y)
+plt.scatter(X[:,0],X[:,1],c=m.predict(X))
+plt.show()
