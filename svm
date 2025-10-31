@@ -96,3 +96,30 @@ plt.xlabel('Sepal Length (cm)')
 plt.ylabel('Sepal Width (cm)')
 plt.legend()
 plt.show()
+
+
+
+
+
+
+
+
+
+
+from sklearn.svm import SVC
+import numpy as np
+import matplotlib.pyplot as plt
+X=np.array([[1,2],[2,3],[3,3],[6,5],[7,8],[8,8]])
+y=np.array([0,0,0,1,1,1])
+m=SVC(kernel='linear').fit(X,y)
+
+w,b=m.coef_[0],m.intercept_[0]
+x=np.linspace(0,9)
+yt=-(w[0]*x+b)/w[1]
+d=1/np.linalg.norm(w)
+
+plt.scatter(X[:,0],X[:,1],c=y)
+plt.plot(x,yt,'k--')
+plt.plot(x,yt+d,'r--')
+plt.plot(x,yt-d,'r--')
+plt.show()
