@@ -69,3 +69,22 @@ plt.ylabel("Probability of Class = 1")
 plt.legend()
 plt.show()
 
+
+
+
+
+
+from sklearn.linear_model import LogisticRegression
+import numpy as np
+import matplotlib.pyplot as plt
+from sklearn.metrics import classification_report,confusion_matrix
+X=np.array([[1],[2],[4],[6],[15],[16],[17],[20]])
+y=np.array([0,0,0,0,1,1,1,1])
+m=LogisticRegression().fit(X,y)
+x=np.linspace(0,22,200).reshape(-1,1)
+y_pred=m.predict(X)
+plt.scatter(X,y)
+plt.plot(x,m.predict_proba(x)[:,1])
+plt.show()
+print(classification_report(y,y_pred))
+print(confusion_matrix(y,y_pred))
