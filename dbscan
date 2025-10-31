@@ -76,3 +76,16 @@ plt.show()
 cm = confusion_matrix(y_true, labels, labels=np.unique(labels))
 print("\n📊 Confusion Matrix (True vs DBSCAN Labels):\n")
 print(cm)
+
+
+
+
+
+
+from sklearn.cluster import DBSCAN
+import numpy as np, matplotlib.pyplot as plt
+
+X=np.array([[1,2],[2,3],[2,2],[8,7],[8,8],[25,80]])
+y=DBSCAN(eps=3,min_samples=2).fit_predict(X)
+plt.scatter(X[:,0],X[:,1],c=y)
+plt.show()
