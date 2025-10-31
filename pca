@@ -71,5 +71,18 @@ print(f" Total Variance Retained: {pca.explained_variance_ratio_.sum():.2%}")
 
 
 
-
-##This graph shows the result of applying Principal Component Analysis (PCA) on the Iris dataset, reducing its four original features to two new components — Principal Component 1 (PC1) and Principal Component 2 (PC2). The X-axis (PC1) explains about 72.96% of the total variance, and the Y-axis (PC2) explains 22.85%, meaning together they retain around 95.8% of the dataset’s information. Each point represents one flower sample, and the colors correspond to the three Iris species — Setosa, Versicolor, and Virginica. The plot clearly shows that Setosa forms a distinct, well-separated cluster, while Versicolor and Virginica overlap slightly, indicating they have more similar features. Overall, the graph demonstrates how PCA effectively reduces dimensions while preserving most of the important patterns and relationships in the data.##
+from sklearn.decomposition import PCA
+import numpy as np
+import matplotlib.pyplot as plt
+X = np.array([
+    [1,2,3,4],
+    [2,3,4,5],
+    [3,4,5,6],
+    [6,5,8,9],
+    [7,8,9,10],
+    [8,9,10,11]
+])
+m=PCA(n_components=2).fit(X,y)
+y=m.transform(X)
+plt.scatter(y[:,0],y[:,1])
+plt.show()
